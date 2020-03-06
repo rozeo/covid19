@@ -626,8 +626,50 @@ const init = () => {
     });
   }
 
+  const bindSNSShareURL = () => {
+    let url = encodeURIComponent(document.URL);
+    let shareText = encodeURIComponent(document.title + " - ");
+
+    let shareAttrTwitter = [
+      ["url", url],
+      ["text", shareText]
+    ];
+
+    let shareAttrFacebook = [
+      ["u", url]
+    ];
+
+    const buildQueryString = (arr) => {
+      return arr.map((value) => value.join("=")).join("&");
+    }
+
+    const targets = [
+      {
+        "base": "https://twitter.com/intent/tweet",
+        "selector": "a.twitter",
+        "data": shareAttrTwitter
+      },
+      {
+        "base": "https://www.facebook.com/sharer/sharer.php",
+        "selector": "a.facebook",
+        "data": shareAttrFacebook
+      }
+    ];
+    
+    targets.forEach((target) => { 
+      if ((dom = document.querySelector(target.selector))) {
+        dom.setAttribute(
+          'href',
+          target.base + '?' + buildQueryString(target.data)
+        );
+      }
+    });
+  }
+
   loadData();
   bindEvents();
+
+  bindSNSShareURL();
 };
 
 
